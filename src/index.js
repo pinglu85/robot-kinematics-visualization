@@ -16,7 +16,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import URDFLoader from 'urdf-loader';
 
-const URDF_FILE_PATH = './src/urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
+const URDF_FILE_PATH = './urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
 const CAMERA_POS_X = 2;
 const CAMERA_POS_Y = 2;
 const CAMERA_POS_Z = 2;
@@ -106,8 +106,8 @@ manager.onLoad = () => {
     c.castShadow = true;
   });
 
-  const deg = Math.floor(Math.random() * 91);
   // Bent the robot
+  const deg = Math.floor(Math.random() * 91);
   for (let i = 0; i < 7; i++) {
     robot.joints[`kuka_arm_${i}_joint`].setJointValue(MathUtils.degToRad(deg));
   }

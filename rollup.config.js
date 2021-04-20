@@ -1,8 +1,7 @@
-import node_resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { babel } from '@rollup/plugin-babel';
 import hotcss from 'rollup-plugin-hot-css';
 import commonjs from 'rollup-plugin-commonjs-alternate';
-import replace from 'rollup-plugin-replace';
 import static_files from 'rollup-plugin-static-files';
 import { terser } from 'rollup-plugin-terser';
 
@@ -17,12 +16,13 @@ let config = {
   plugins: [
     hotcss({
       hot: process.env.NODE_ENV === 'development',
-      filename: 'styles.css',
+      filename: 'style.css',
     }),
     babel({
+      babelHelpers: 'bundled',
       exclude: 'node_modules/**',
     }),
-    node_resolve(),
+    nodeResolve(),
     commonjs({
       define: {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -36,7 +36,13 @@ if (process.env.NODE_ENV === 'production') {
     static_files({
       include: ['./public'],
     }),
-    terser(),
+    terser({
+      compress: {
+        global_defs: {
+          module: false,
+        },
+      },
+    }),
   ]);
 }
 
