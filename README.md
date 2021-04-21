@@ -4,6 +4,15 @@ A web application that visualizes robot kinematics.
 
 The project was bootstrapped with [create-nollup-app](https://github.com/PepsRyuu/create-nollup-app).
 
+## Get started
+
+Install the dependencies.
+
+```bash
+cd robot-kinematics-visualization
+npm install
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
