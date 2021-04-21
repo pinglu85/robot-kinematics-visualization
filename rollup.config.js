@@ -76,5 +76,9 @@ export default {
   ],
   watch: {
     clearScreen: false,
+    chokidar: {
+      usePolling: true,
+    },
+    exclude: 'node_modules/**',
   },
 };
