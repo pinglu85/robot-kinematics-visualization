@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import createScene from './scene';
+  import createScene from './createScene';
 
   let canvasEl;
 
