@@ -1,11 +1,18 @@
 <script>
   import { onMount } from 'svelte';
-  import createScene from './createScene';
+  import createScene, { bendRobot } from './createScene';
 
   let canvasEl;
 
+  // Receive the props degree from parent component
+  export let degree;
+
+  // Rerun `bendRobot` on `degree` change.
+  // $: <statement> is reactive declaration.
+  $: bendRobot(degree);
+
   onMount(() => {
-    createScene(canvasEl);
+    createScene(canvasEl, degree);
   });
 </script>
 

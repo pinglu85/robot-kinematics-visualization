@@ -39,14 +39,14 @@ ROS URDf
 
 */
 
-let scene, camera, renderer;
+let scene, camera, renderer, robot;
 
-function createScene(canvasEl) {
-  init(canvasEl);
+function createScene(canvasEl, degree) {
+  init(canvasEl, degree);
   render();
 }
 
-function init(canvasEl) {
+function init(canvasEl, degree) {
   // *** Initialize three.js scene ***
 
   scene = new Scene();
@@ -91,8 +91,6 @@ function init(canvasEl) {
 
   // *** Load URDF ***
 
-  let robot;
-
   const manager = new LoadingManager();
   const loader = new URDFLoader(manager);
   loader.load(URDF_FILE_PATH, (result) => {
@@ -113,13 +111,8 @@ function init(canvasEl) {
       c.castShadow = true;
     });
 
-    // Bent the robot
-    const deg = Math.floor(Math.random() * 91);
-    for (let i = 0; i < 7; i++) {
-      robot.joints[`kuka_arm_${i}_joint`].setJointValue(
-        MathUtils.degToRad(deg)
-      );
-    }
+    // Bend the robot
+    bendRobot(degree);
 
     scene.add(robot);
   };
@@ -132,4 +125,15 @@ function render() {
   renderer.render(scene, camera);
 }
 
+function bendRobot(degree) {
+  if (!robot) return;
+
+  for (let i = 0; i < 7; i++) {
+    robot.joints[`kuka_arm_${i}_joint`].setJointValue(
+      MathUtils.degToRad(degree)
+    );
+  }
+}
+
 export default createScene;
+export { bendRobot };

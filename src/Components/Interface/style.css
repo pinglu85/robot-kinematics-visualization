@@ -1,0 +1,10 @@
+div {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 200px;
+  height: 180px;
+  padding: 1rem;
+  background-color: #fff;
+  z-index: 20;
+}
