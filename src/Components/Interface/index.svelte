@@ -1,5 +1,4 @@
 <script lang="ts">
-  // @ts-check
   import './style.css';
 
   export let degree: number;
