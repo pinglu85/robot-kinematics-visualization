@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import createScene, { bendRobot } from './createScene';
 
-  let canvasEl;
+  let canvasEl: HTMLCanvasElement;
 
   // Receive the props degree from parent component
-  export let degree;
+  export let degree: number;
 
   // Rerun `bendRobot` on `degree` change.
   // $: <statement> is reactive declaration.
