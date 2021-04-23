@@ -9,12 +9,13 @@ import {
   MeshPhongMaterial,
   DoubleSide,
   PCFSoftShadowMap,
+  Object3D,
   Vector3,
   MathUtils,
   LoadingManager,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import URDFLoader from 'urdf-loader';
+import URDFLoader, { URDFRobot } from 'urdf-loader';
 
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
 const CAMERA_POS_X = 2;
@@ -39,14 +40,17 @@ ROS URDf
 
 */
 
-let scene, camera, renderer, robot;
+let scene: Scene;
+let camera: PerspectiveCamera;
+let renderer: WebGLRenderer;
+let robot: URDFRobot;
 
-function createScene(canvasEl, degree) {
+function createScene(canvasEl: HTMLCanvasElement, degree: number): void {
   init(canvasEl, degree);
   render();
 }
 
-function init(canvasEl, degree) {
+function init(canvasEl: HTMLCanvasElement, degree: number): void {
   // *** Initialize three.js scene ***
 
   scene = new Scene();
@@ -107,7 +111,7 @@ function init(canvasEl, degree) {
     // robot.translateOnAxis(0, 0, 0);
     // robot.position.copy(new Vector3(0.0, 0.0, 0.0));
     // Traverse the robot and cast shadow
-    robot.traverse((c) => {
+    robot.traverse((c: Object3D): void => {
       c.castShadow = true;
     });
 
@@ -125,7 +129,7 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function bendRobot(degree) {
+function bendRobot(degree: number): void {
   if (!robot) return;
 
   for (let i = 0; i < 7; i++) {

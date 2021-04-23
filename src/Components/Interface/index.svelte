@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
   import './style.css';
 
-  export let degree;
+  export let degree: number;
 </script>
 
 <div>
