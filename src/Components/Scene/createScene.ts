@@ -18,6 +18,8 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import URDFLoader, { URDFRobot } from 'urdf-loader';
 
+import { numOfRobotJoints } from '../../stores';
+
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
 const CAMERA_POS_X = 2;
 const CAMERA_POS_Y = 2;
@@ -114,6 +116,12 @@ function init(canvasEl: HTMLCanvasElement, degrees: number[]): void {
     // Traverse the robot and cast shadow
     robot.traverse((c: Object3D): void => {
       c.castShadow = true;
+    });
+
+    // Match the number of inputs in `Interface` with number
+    // of robot's joints.
+    numOfRobotJoints.update((): number => {
+      return Object.keys(robot.joints).length;
     });
 
     // Rotate robot's joints
