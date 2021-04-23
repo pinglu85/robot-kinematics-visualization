@@ -10,6 +10,7 @@ import {
   DoubleSide,
   PCFSoftShadowMap,
   Object3D,
+  Box3,
   Vector3,
   MathUtils,
   LoadingManager,
@@ -45,12 +46,12 @@ let camera: PerspectiveCamera;
 let renderer: WebGLRenderer;
 let robot: URDFRobot;
 
-function createScene(canvasEl: HTMLCanvasElement, degree: number): void {
-  init(canvasEl, degree);
+function createScene(canvasEl: HTMLCanvasElement, degrees: number[]): void {
+  init(canvasEl, degrees);
   render();
 }
 
-function init(canvasEl: HTMLCanvasElement, degree: number): void {
+function init(canvasEl: HTMLCanvasElement, degrees: number[]): void {
   // *** Initialize three.js scene ***
 
   scene = new Scene();
@@ -115,8 +116,15 @@ function init(canvasEl: HTMLCanvasElement, degree: number): void {
       c.castShadow = true;
     });
 
-    // Bend the robot
-    bendRobot(degree);
+    // Rotate robot's joints
+    rotateJoints(degrees);
+
+    // Updates the global transform of the object and its descendants.
+    robot.updateMatrixWorld(true);
+
+    // Create a bounding box of robot.
+    const bb = new Box3();
+    bb.setFromObject(robot);
 
     scene.add(robot);
   };
@@ -129,15 +137,16 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function bendRobot(degree: number): void {
+function rotateJoints(degrees: number[]): void {
   if (!robot) return;
 
-  for (let i = 0; i < 7; i++) {
-    robot.joints[`kuka_arm_${i}_joint`].setJointValue(
-      MathUtils.degToRad(degree)
-    );
-  }
+  const { joints } = robot;
+  const jointNames = Object.keys(joints);
+  jointNames.forEach((jointName: string, idx: number): void => {
+    const degree = degrees[idx];
+    joints[jointName].setJointValue(MathUtils.degToRad(degree));
+  });
 }
 
 export default createScene;
-export { bendRobot };
+export { rotateJoints };
