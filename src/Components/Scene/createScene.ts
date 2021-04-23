@@ -43,7 +43,7 @@ ROS URDf
 let scene: Scene;
 let camera: PerspectiveCamera;
 let renderer: WebGLRenderer;
-let robot: URDFRobot | Object3D;
+let robot: URDFRobot;
 
 function createScene(canvasEl: HTMLCanvasElement, degree: number): void {
   init(canvasEl, degree);
