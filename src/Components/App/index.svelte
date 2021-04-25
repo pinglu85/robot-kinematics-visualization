@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { numOfRobotJoints } from '../../stores';
+  import { jointInfosStore } from '../../stores';
+  import type { JointInfo } from '../../types';
   import Interface from '../Interface/index.svelte';
   import Scene from '../Scene/index.svelte';
 
-  let degrees: number[] = [];
+  let jointInfos: JointInfo[] = [];
 
-  numOfRobotJoints.subscribe((value: number): void => {
-    degrees = Array.from(Array(value), () => Math.floor(Math.random() * 90));
+  jointInfosStore.subscribe((value: JointInfo[]): void => {
+    jointInfos = value;
   });
 </script>
 
-<Interface bind:degrees />
-<Scene bind:degrees />
+<Interface bind:jointInfos />
+<Scene bind:jointInfos />
