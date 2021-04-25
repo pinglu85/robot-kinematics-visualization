@@ -47,6 +47,8 @@ ROS URDf
 let scene: Scene;
 let camera: PerspectiveCamera;
 let renderer: WebGLRenderer;
+let manager: LoadingManager;
+let loader: URDFLoader;
 let robot: URDFRobot;
 
 function createScene(canvasEl: HTMLCanvasElement): void {
@@ -99,9 +101,24 @@ function init(canvasEl: HTMLCanvasElement): void {
 
   // *** Load URDF ***
 
-  const manager = new LoadingManager();
-  const loader = new URDFLoader(manager);
-  loader.load(URDF_FILE_PATH, (result) => {
+  manager = new LoadingManager();
+  loader = new URDFLoader(manager);
+  loadRobot();
+}
+
+// *** Render the scene onto the screen ***
+
+function render() {
+  requestAnimationFrame(render);
+  renderer.render(scene, camera);
+}
+
+function loadRobot(url = URDF_FILE_PATH) {
+  if (robot) {
+    removeOldRobotFromScene();
+  }
+
+  loader.load(url, (result) => {
     console.log(result);
     robot = result;
   });
@@ -136,11 +153,9 @@ function init(canvasEl: HTMLCanvasElement): void {
   };
 }
 
-// *** Render the scene onto the screen ***
-
-function render() {
-  requestAnimationFrame(render);
-  renderer.render(scene, camera);
+function removeOldRobotFromScene() {
+  const name = scene.getObjectByName(robot.name);
+  scene.remove(name);
 }
 
 function rotateJoints(jointInfos: JointInfo[]): void {
@@ -171,4 +186,4 @@ function updateJointInfos(): JointInfo[] {
 }
 
 export default createScene;
-export { rotateJoints };
+export { rotateJoints, loadRobot };
