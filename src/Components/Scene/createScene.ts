@@ -18,7 +18,8 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import URDFLoader, { URDFRobot } from 'urdf-loader';
 
-import { numOfRobotJoints } from '../../stores';
+import { jointInfosStore } from '../../stores';
+import type { JointInfo } from '../../types';
 
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
 const CAMERA_POS_X = 2;
@@ -48,12 +49,12 @@ let camera: PerspectiveCamera;
 let renderer: WebGLRenderer;
 let robot: URDFRobot;
 
-function createScene(canvasEl: HTMLCanvasElement, degrees: number[]): void {
-  init(canvasEl, degrees);
+function createScene(canvasEl: HTMLCanvasElement): void {
+  init(canvasEl);
   render();
 }
 
-function init(canvasEl: HTMLCanvasElement, degrees: number[]): void {
+function init(canvasEl: HTMLCanvasElement): void {
   // *** Initialize three.js scene ***
 
   scene = new Scene();
@@ -92,7 +93,7 @@ function init(canvasEl: HTMLCanvasElement, degrees: number[]): void {
 
   // Allow user to rotate around the robot.
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.minDistance = 4;
+  controls.minDistance = 1;
   controls.target.y = 1;
   controls.update();
 
@@ -115,17 +116,14 @@ function init(canvasEl: HTMLCanvasElement, degrees: number[]): void {
     // robot.position.copy(new Vector3(0.0, 0.0, 0.0));
     // Traverse the robot and cast shadow
     robot.traverse((c: Object3D): void => {
+      // if (c instanceof Mesh) {
+      //   c.material.color.set(0xffd324);
+      // }
       c.castShadow = true;
     });
 
-    // Match the number of inputs in `Interface` with number
-    // of robot's joints.
-    numOfRobotJoints.update((): number => {
-      return Object.keys(robot.joints).length;
-    });
-
-    // Rotate robot's joints
-    rotateJoints(degrees);
+    // Pass each joint's limits and initial degree to `Interface`.
+    jointInfosStore.update(updateJointInfos);
 
     // Updates the global transform of the object and its descendants.
     robot.updateMatrixWorld(true);
@@ -145,14 +143,30 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function rotateJoints(degrees: number[]): void {
+function rotateJoints(jointInfos: JointInfo[]): void {
   if (!robot) return;
 
   const { joints } = robot;
   const jointNames = Object.keys(joints);
   jointNames.forEach((jointName: string, idx: number): void => {
-    const degree = degrees[idx];
+    const { degree } = jointInfos[idx];
     joints[jointName].setJointValue(MathUtils.degToRad(degree));
+  });
+}
+
+function updateJointInfos(): JointInfo[] {
+  return Object.keys(robot.joints).map((jointName: string) => {
+    const { lower, upper } = robot.joints[jointName].limit;
+    const lowerDegree = Number(MathUtils.radToDeg(Number(lower)).toFixed());
+    const upperDegree = Number(MathUtils.radToDeg(Number(upper)).toFixed());
+
+    return {
+      lower: lowerDegree,
+      upper: upperDegree,
+      degree:
+        Math.floor(Math.random() * (upperDegree - lowerDegree + 1)) +
+        lowerDegree,
+    };
   });
 }
 

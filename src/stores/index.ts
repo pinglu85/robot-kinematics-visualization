@@ -1,3 +1,4 @@
 import { writable } from 'svelte/store';
+import type { JointInfo } from '../types';
 
-export const numOfRobotJoints = writable<number>(0);
+export const jointInfosStore = writable<JointInfo[]>([]);

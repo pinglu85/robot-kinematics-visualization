@@ -1,15 +1,22 @@
 <script lang="ts">
+  import type { JointInfo } from '../../types';
+
   import './style.css';
 
-  export let degrees: number[];
+  export let jointInfos: JointInfo[];
 </script>
 
 <div>
-  {#each degrees as degree, idx}
+  {#each jointInfos as jointInfo, idx}
     <label>
       Joint {idx}:
-      <input bind:value={degree} type="text" />
-      <input bind:value={degree} type="range" min="0" max="90" />
+      <input bind:value={jointInfo.degree} type="text" />
+      <input
+        bind:value={jointInfo.degree}
+        type="range"
+        min={jointInfo.lower}
+        max={jointInfo.upper}
+      />
     </label>
   {/each}
 </div>
