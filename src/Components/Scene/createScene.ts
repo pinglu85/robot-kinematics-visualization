@@ -4,10 +4,6 @@ import {
   WebGLRenderer,
   DirectionalLight,
   AmbientLight,
-  Mesh,
-  PlaneBufferGeometry,
-  MeshPhongMaterial,
-  DoubleSide,
   PCFSoftShadowMap,
   Object3D,
   Box3,
@@ -82,15 +78,6 @@ function init(canvasEl: HTMLCanvasElement): void {
 
   const ambientLight = new AmbientLight(0xffffff, 0.2);
   scene.add(ambientLight);
-
-  const ground = new Mesh(
-    new PlaneBufferGeometry(),
-    new MeshPhongMaterial({ color: 0x111111, side: DoubleSide })
-  );
-  ground.rotation.x = -Math.PI / 2;
-  ground.scale.setScalar(10);
-  ground.receiveShadow = true;
-  scene.add(ground);
 
   // Allow user to rotate around the robot.
   controls = new OrbitControls(camera, renderer.domElement);
