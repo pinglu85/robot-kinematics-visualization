@@ -9,7 +9,7 @@
 <div>
   {#each jointInfos as jointInfo, idx}
     <label>
-      Joint {idx}:
+      {jointInfo.name || `Joint ${idx}`}
       <input bind:value={jointInfo.degree} type="text" />
       <input
         bind:value={jointInfo.degree}
