@@ -192,6 +192,7 @@ function updateJointInfos(): JointInfo[] {
     const upperDegree = Number(MathUtils.radToDeg(Number(upper)).toFixed());
 
     return {
+      name: jointName,
       lower: lowerDegree,
       upper: upperDegree,
       degree:

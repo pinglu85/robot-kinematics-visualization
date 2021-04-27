@@ -1,4 +1,5 @@
 export interface JointInfo {
+  name: string;
   lower: number;
   upper: number;
   degree: number;
