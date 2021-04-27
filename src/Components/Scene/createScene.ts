@@ -16,7 +16,10 @@ import {
   LoadingManager,
   BufferGeometry,
 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import {
+  MapControls,
+  OrbitControls,
+} from 'three/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import URDFLoader, { URDFRobot } from 'urdf-loader';
 
@@ -54,6 +57,7 @@ let renderer: WebGLRenderer;
 let manager: LoadingManager;
 let loader: URDFLoader;
 let robot: URDFRobot;
+let controls: OrbitControls;
 
 function createScene(canvasEl: HTMLCanvasElement): void {
   init(canvasEl);
@@ -93,10 +97,8 @@ function init(canvasEl: HTMLCanvasElement): void {
   scene.add(ground);
 
   // Allow user to rotate around the robot.
-  const controls = new OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
   controls.minDistance = 1;
-  controls.target.y = 1;
-  controls.update();
 
   // *** Load URDF ***
 
@@ -176,6 +178,9 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
     const boxCenter = box.getCenter(new Vector3());
 
     scaleInView(boxSize * 0.5, boxSize, boxCenter, camera);
+
+    controls.target.copy(boxCenter);
+    controls.update();
 
     scene.add(robot);
   };
