@@ -14,16 +14,15 @@ import {
   Vector3,
   MathUtils,
   LoadingManager,
-  BufferGeometry,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import URDFLoader, { URDFRobot } from 'urdf-loader';
 
 import { jointInfosStore } from '../../stores';
 import type { JointInfo } from '../../types';
-import modifyPath from './utils/modifyPath';
+import getFileNameFromPath from './utils/getFileNameFromPath';
 import scaleInView from './utils/scaleInView';
+import { loadSTL, loadDAE } from './utils/loadMesh';
 
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
 const CAMERA_POS_X = 10;
@@ -123,21 +122,19 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
       manager: LoadingManager,
       onComplete: (obj: Object3D, err?: ErrorEvent) => void
     ): void => {
-      const stlLoader = new STLLoader(manager);
-      const modifiedPath = modifyPath(path);
-      const fileURL = URL.createObjectURL(files[modifiedPath]);
-      stlLoader.load(
-        fileURL,
-        (result: BufferGeometry) => {
-          const material = new MeshPhongMaterial();
-          const mesh = new Mesh(result, material);
-          onComplete(mesh);
-        },
-        null,
-        (err: ErrorEvent) => {
-          onComplete(null, err);
-        }
-      );
+      const { fileName, fileExtension } = getFileNameFromPath(path);
+      const fileURL = URL.createObjectURL(files[fileName]);
+
+      switch (fileExtension) {
+        case 'stl':
+          loadSTL(manager, onComplete, fileURL);
+          break;
+        case 'dae':
+          loadDAE(manager, onComplete, fileURL);
+          break;
+        default:
+          throw new Error('Mesh format not supported');
+      }
     };
   }
 
