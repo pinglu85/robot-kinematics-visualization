@@ -23,11 +23,12 @@ import URDFLoader, { URDFRobot } from 'urdf-loader';
 import { jointInfosStore } from '../../stores';
 import type { JointInfo } from '../../types';
 import modifyPath from './utils/modifyPath';
+import scaleInView from './utils/scaleInView';
 
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
-const CAMERA_POS_X = 2;
-const CAMERA_POS_Y = 2;
-const CAMERA_POS_Z = 2;
+const CAMERA_POS_X = 10;
+const CAMERA_POS_Y = 10;
+const CAMERA_POS_Z = 10;
 
 /*
 
@@ -64,14 +65,9 @@ function init(canvasEl: HTMLCanvasElement): void {
 
   scene = new Scene();
 
-  camera = new PerspectiveCamera(
-    45, // Field of view
-    window.innerWidth / window.innerHeight, // Aspect ratio
-    0.1, // Near
-    1000 // Far
-  );
+  camera = new PerspectiveCamera();
+  camera.aspect = window.innerWidth / window.innerHeight; // Aspect ratio
   camera.position.set(CAMERA_POS_X, CAMERA_POS_Y, CAMERA_POS_Z);
-  camera.lookAt(0, 0, 0);
 
   renderer = new WebGLRenderer({ antialias: true, canvas: canvasEl });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -174,8 +170,12 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
     robot.updateMatrixWorld(true);
 
     // Create a bounding box of robot.
-    const bb = new Box3();
-    bb.setFromObject(robot);
+    const box = new Box3().setFromObject(robot);
+
+    const boxSize = box.getSize(new Vector3()).length();
+    const boxCenter = box.getCenter(new Vector3());
+
+    scaleInView(boxSize * 0.5, boxSize, boxCenter, camera);
 
     scene.add(robot);
   };
