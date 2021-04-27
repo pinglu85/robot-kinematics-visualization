@@ -111,12 +111,12 @@ function init(canvasEl: HTMLCanvasElement): void {
 
 // *** Render the scene onto the screen ***
 
-function render() {
+function render(): void {
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }
 
-function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>) {
+function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
   if (robot) {
     removeOldRobotFromScene();
   }
@@ -146,14 +146,14 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>) {
     };
   }
 
-  loader.load(url, (result) => {
+  loader.load(url, (result: URDFRobot): void => {
     console.log(result);
     robot = result;
   });
 
   // Wait until all geometry has been loaded, then add
   // the robot to the scene.
-  manager.onLoad = () => {
+  manager.onLoad = (): void => {
     // Rotate the robot
     robot.rotation.x = -Math.PI / 2;
     // Center the robot
@@ -181,7 +181,7 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>) {
   };
 }
 
-function removeOldRobotFromScene() {
+function removeOldRobotFromScene(): void {
   const name = scene.getObjectByName(robot.name);
   scene.remove(name);
 }
