@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import type { JointInfo } from '../../types';
   import createScene, { rotateJoints, loadRobot } from './createScene';
+  import readDirectory from './readDirectory';
 
   let canvasEl: HTMLCanvasElement;
 
@@ -21,20 +22,33 @@
     evt.preventDefault();
   }
 
-  function handleDropFile(evt: DragEvent): void {
+  async function handleDrop(evt: DragEvent): Promise<void> {
     cancelEventDefaultBehaviors(evt);
 
-    const { files } = evt.dataTransfer;
-    const file = files[0];
-    const regExp = /.urdf$/i;
-    if (!regExp.test(file.name)) {
-      alert('Please upload URDF file');
+    const { items } = evt.dataTransfer;
+    const files: Record<string, File> = {};
+
+    await readDirectory(items, files);
+
+    const urdfFileName = Object.keys(files).find(
+      (fileName: string): boolean => {
+        return /.urdf/i.test(fileName);
+      }
+    );
+
+    if (!urdfFileName) {
+      alert('Please upload a valid URDF file');
       return;
     }
 
+    console.log(files);
+
     // Create a new object URL represents the file.
-    const fileURL = URL.createObjectURL(file);
-    loadRobot(fileURL);
+    const urdfFileURL = URL.createObjectURL(files[urdfFileName]);
+    requestAnimationFrame((): void => {
+      URL.revokeObjectURL(urdfFileURL);
+    });
+    loadRobot(urdfFileURL, files);
   }
 </script>
 
@@ -43,5 +57,5 @@
   bind:this={canvasEl}
   on:dragenter={cancelEventDefaultBehaviors}
   on:dragover={cancelEventDefaultBehaviors}
-  on:drop={handleDropFile}
+  on:drop={handleDrop}
 />
