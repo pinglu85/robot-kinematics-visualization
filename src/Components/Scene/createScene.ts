@@ -190,11 +190,12 @@ function updateJointInfos(): JointInfo[] {
     const { lower, upper } = robot.joints[jointName].limit;
     const lowerDegree = Number(MathUtils.radToDeg(Number(lower)).toFixed());
     const upperDegree = Number(MathUtils.radToDeg(Number(upper)).toFixed());
+    const jointHasLimit = lowerDegree !== 0 || upperDegree !== 0;
 
     return {
       name: jointName,
-      lower: lowerDegree,
-      upper: upperDegree,
+      lower: jointHasLimit ? lowerDegree : -180,
+      upper: jointHasLimit ? upperDegree : 180,
       degree:
         Math.floor(Math.random() * (upperDegree - lowerDegree + 1)) +
         lowerDegree,
