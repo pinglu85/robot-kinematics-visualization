@@ -3,3 +3,8 @@ export interface JointInfo {
   upper: number;
   degree: number;
 }
+
+export interface FileInfo {
+  fileName: string;
+  fileExtension: string;
+}
