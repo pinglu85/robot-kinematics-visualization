@@ -16,10 +16,7 @@ import {
   LoadingManager,
   BufferGeometry,
 } from 'three';
-import {
-  MapControls,
-  OrbitControls,
-} from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import URDFLoader, { URDFRobot } from 'urdf-loader';
 
