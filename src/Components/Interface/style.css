@@ -3,8 +3,9 @@ div {
   right: 0;
   top: 0;
   width: 200px;
-  min-height: 431px;
+  height: 100vh;
   padding: 1rem;
+  overflow-y: auto;
   background-color: #fff;
   z-index: 20;
 }
