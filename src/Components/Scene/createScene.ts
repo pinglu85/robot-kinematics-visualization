@@ -88,6 +88,10 @@ function init(canvasEl: HTMLCanvasElement): void {
   manager = new LoadingManager();
   loader = new URDFLoader(manager);
   loadRobot();
+
+  // *** Resize the contents of the canvas on window resize.
+
+  window.addEventListener('resize', onResize);
 }
 
 // *** Render the scene onto the screen ***
@@ -199,6 +203,14 @@ function updateJointInfos(): JointInfo[] {
         lowerDegree,
     };
   });
+}
+
+function onResize(): void {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
 }
 
 export default createScene;
