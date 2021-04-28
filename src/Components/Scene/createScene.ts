@@ -98,9 +98,7 @@ function render(): void {
 }
 
 function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
-  if (robot) {
-    removeOldRobotFromScene();
-  }
+  if (robot) removeOldRobotFromScene();
 
   const filesHaveBeenUploaded = files !== undefined;
   if (filesHaveBeenUploaded) {
