@@ -160,7 +160,7 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
     const boxSize = box.getSize(new Vector3()).length();
     const boxCenter = box.getCenter(new Vector3());
 
-    robot.position.y -= box.min.y;
+    // robot.position.y -= box.min.y;
 
     scaleInView(boxSize * 0.5, boxSize, boxCenter, camera);
 
