@@ -21,9 +21,6 @@ import scaleInView from './utils/scaleInView';
 import { loadSTL, loadDAE } from './utils/loadMesh';
 
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
-const CAMERA_POS_X = 10;
-const CAMERA_POS_Y = 10;
-const CAMERA_POS_Z = 10;
 
 /*
 
@@ -61,9 +58,12 @@ function init(canvasEl: HTMLCanvasElement): void {
 
   scene = new Scene();
 
-  camera = new PerspectiveCamera();
-  camera.aspect = window.innerWidth / window.innerHeight; // Aspect ratio
-  camera.position.set(CAMERA_POS_X, CAMERA_POS_Y, CAMERA_POS_Z);
+  const fov = 45;
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  const near = 0.1;
+  const far = 100;
+  camera = new PerspectiveCamera(fov, aspectRatio, near, far);
+  camera.position.set(10, 10, 10);
 
   renderer = new WebGLRenderer({ antialias: true, canvas: canvasEl });
   renderer.setSize(window.innerWidth, window.innerHeight);
