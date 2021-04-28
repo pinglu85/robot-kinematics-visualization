@@ -7,8 +7,8 @@ function scaleInView(
   boxCenter: Vector3,
   camera: PerspectiveCamera
 ): void {
-  const halfFovY = MathUtils.degToRad(camera.fov * 0.5);
-  const distance = sizeToFitOnScreen / Math.tan(halfFovY);
+  const quarterFovY = MathUtils.degToRad(camera.fov * 0.25);
+  const distance = sizeToFitOnScreen / Math.tan(quarterFovY);
 
   // Compute a unit vector that points in the direction the camera is now
   // in the xz plane from the center of the box
