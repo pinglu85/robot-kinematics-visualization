@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { JointInfo } from '../../types';
 
-  import UpAxisDropdown from './UpAxisDropdown/index.svelte';
+  import UpAxisDropdown from './UpAxisDropdown.svelte';
+  import JointControls from './JointControls.svelte';
 
   export let jointInfos: JointInfo[];
   export let selectedUpAxis: string;
@@ -9,18 +10,7 @@
 
 <div>
   <UpAxisDropdown bind:selectedUpAxis />
-  {#each jointInfos as jointInfo, idx}
-    <label>
-      {jointInfo.name || `Joint ${idx}`}
-      <input bind:value={jointInfo.degree} type="text" />
-      <input
-        bind:value={jointInfo.degree}
-        type="range"
-        min={jointInfo.lower}
-        max={jointInfo.upper}
-      />
-    </label>
-  {/each}
+  <JointControls bind:jointInfos />
 </div>
 
 <!-- 
@@ -35,12 +25,7 @@
     width: 200px;
     height: 100vh;
     padding: 1rem;
-    overflow-y: auto;
     background-color: #fff;
     z-index: 20;
-  }
-
-  label {
-    display: block;
   }
 </style>

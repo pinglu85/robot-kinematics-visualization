@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as axes from '../../../constants/axes';
+  import * as axes from '../../constants/axes';
 
   const options = Object.keys(axes).map((axisName): string => axes[axisName]);
 
@@ -19,5 +19,6 @@
   label {
     display: flex;
     justify-content: space-between;
+    height: 24px;
   }
 </style>
