@@ -14,11 +14,13 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import URDFLoader, { URDFRobot } from 'urdf-loader';
 
-import { jointInfosStore } from '../../stores';
+import { jointInfosStore, selectedUpAxisStore } from '../../stores';
 import type { JointInfo } from '../../types';
 import getFileNameFromPath from './utils/getFileNameFromPath';
 import scaleInView from './utils/scaleInView';
 import { loadSTL, loadDAE } from './utils/loadMesh';
+import setRobotRotation from './utils/setRobotRotation';
+import * as axes from '../../constants/axes';
 
 const URDF_FILE_PATH = '../urdf/KUKA_LWR/urdf/kuka_lwr.URDF';
 
@@ -47,6 +49,7 @@ let manager: LoadingManager;
 let loader: URDFLoader;
 let robot: URDFRobot;
 let controls: OrbitControls;
+let box: Box3;
 
 function createScene(canvasEl: HTMLCanvasElement): void {
   init(canvasEl);
@@ -63,7 +66,7 @@ function init(canvasEl: HTMLCanvasElement): void {
   const near = 0.1;
   const far = 100;
   camera = new PerspectiveCamera(fov, aspectRatio, near, far);
-  camera.position.set(10, 10, 10);
+  camera.position.set(2, 2, 2);
 
   renderer = new WebGLRenderer({ antialias: true, canvas: canvasEl });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -135,8 +138,6 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
   // Wait until all geometry has been loaded, then add
   // the robot to the scene.
   manager.onLoad = (): void => {
-    // Rotate the robot
-    robot.rotation.x = -Math.PI / 2;
     // Center the robot
     // robot.translateOnAxis(0, 0, 0);
     // robot.position.copy(new Vector3(0.0, 0.0, 0.0));
@@ -151,21 +152,10 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
     // Pass each joint's limits and initial degree to `Interface`.
     jointInfosStore.update(updateJointInfos);
 
+    selectedUpAxisStore.update((): string => axes.Z);
+
     // Updates the global transform of the object and its descendants.
     robot.updateMatrixWorld(true);
-
-    // Create a bounding box of robot.
-    const box = new Box3().setFromObject(robot);
-
-    const boxSize = box.getSize(new Vector3()).length();
-    const boxCenter = box.getCenter(new Vector3());
-
-    // robot.position.y -= box.min.y;
-
-    scaleInView(boxSize * 0.5, boxSize, boxCenter, camera);
-
-    controls.target.copy(boxCenter);
-    controls.update();
 
     scene.add(robot);
   };
@@ -174,6 +164,8 @@ function loadRobot(url = URDF_FILE_PATH, files?: Record<string, File>): void {
 function removeOldRobotFromScene(): void {
   const name = scene.getObjectByName(robot.name);
   scene.remove(name);
+  box = null;
+  selectedUpAxisStore.update((): string => '');
 }
 
 function rotateJoints(jointInfos: JointInfo[]): void {
@@ -205,6 +197,51 @@ function updateJointInfos(): JointInfo[] {
   });
 }
 
+function rotateRobotOnUpAxisChange(selectedUpAxis: string): void {
+  if (!robot || selectedUpAxis === '') return;
+
+  switch (selectedUpAxis) {
+    case axes.X:
+      setRobotRotation(robot, 0, 0, Math.PI / 2);
+      break;
+    case axes.NEGATIVE_X:
+      setRobotRotation(robot, 0, 0, -Math.PI / 2);
+      break;
+    case axes.Y:
+      setRobotRotation(robot, 0, 0, 0);
+      break;
+    case axes.NEGATIVE_Y:
+      setRobotRotation(robot, Math.PI, 0, 0);
+      break;
+    case axes.Z:
+      setRobotRotation(robot, -Math.PI / 2, 0, 0);
+      break;
+    case axes.NEGATIVE_Z:
+      setRobotRotation(robot, Math.PI / 2, 0, 0);
+      break;
+    default:
+      throw new Error('Should not reach here');
+  }
+
+  // If we set camera position and orbit controls' target
+  // before the robot is initially rotated, robot will appear
+  // off center and orbit controls will not behave correctly.
+  if (!box) {
+    // Create a bounding box of robot.
+    box = new Box3().setFromObject(robot);
+
+    const boxSize = box.getSize(new Vector3()).length();
+    const boxCenter = box.getCenter(new Vector3());
+
+    // robot.position.x -= box.min.y;
+
+    scaleInView(boxSize * 0.5, boxSize, boxCenter, camera);
+
+    controls.target.y = boxCenter.y;
+    controls.update();
+  }
+}
+
 function onResize(): void {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -214,4 +251,4 @@ function onResize(): void {
 }
 
 export default createScene;
-export { rotateJoints, loadRobot };
+export { rotateJoints, loadRobot, rotateRobotOnUpAxisChange };
