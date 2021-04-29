@@ -1,17 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { JointInfo } from '../../types';
-  import createScene, { rotateJoints, loadRobot } from './createScene';
+  import createScene, {
+    rotateJoints,
+    loadRobot,
+    rotateRobotOnUpAxisChange,
+  } from './createScene';
   import readDirectory from './readDirectory';
 
   let canvasEl: HTMLCanvasElement;
 
   // Receive the props `jointInfos` from parent component
   export let jointInfos: JointInfo[];
-
   // Re-run `rotateJoints` on `jointInfos` change.
   // $: <statement> is reactive declaration.
   $: rotateJoints(jointInfos);
+
+  export let selectedUpAxis: string;
+  $: rotateRobotOnUpAxisChange(selectedUpAxis);
 
   onMount(() => {
     createScene(canvasEl);
