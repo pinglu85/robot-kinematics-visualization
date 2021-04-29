@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { JointInfo } from '../../types';
 
-  import UpAxisDropdown from './UpAxisDropdown/index.svelte';
-  import JointControls from './JointControls/index.svelte';
+  import UpAxisDropdown from './UpAxisDropdown.svelte';
+  import JointControls from './JointControls.svelte';
 
   export let jointInfos: JointInfo[];
   export let selectedUpAxis: string;

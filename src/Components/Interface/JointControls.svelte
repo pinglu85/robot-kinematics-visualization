@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { JointInfo } from '../../../types';
+  import type { JointInfo } from '../../types';
 
   export let jointInfos: JointInfo[];
 </script>
