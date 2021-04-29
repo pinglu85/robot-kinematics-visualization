@@ -19,5 +19,6 @@
   label {
     display: flex;
     justify-content: space-between;
+    height: 24px;
   }
 </style>
