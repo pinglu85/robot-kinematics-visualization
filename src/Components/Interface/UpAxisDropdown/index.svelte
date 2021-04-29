@@ -1,8 +1,6 @@
 <script lang="ts">
   import * as axes from '../../../constants/axes';
 
-  import './style.css';
-
   const options = Object.keys(axes).map((axisName): string => axes[axisName]);
 
   export let selectedUpAxis: string;
@@ -16,3 +14,10 @@
     {/each}
   </select>
 </label>
+
+<style>
+  label {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

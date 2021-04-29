@@ -3,8 +3,6 @@
 
   import UpAxisDropdown from './UpAxisDropdown/index.svelte';
 
-  import './style.css';
-
   export let jointInfos: JointInfo[];
   export let selectedUpAxis: string;
 </script>
@@ -24,3 +22,25 @@
     </label>
   {/each}
 </div>
+
+<!-- 
+  Styles are scoped to a component only if they are
+  defined within a Svelte file.
+-->
+<style>
+  div {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 200px;
+    height: 100vh;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: #fff;
+    z-index: 20;
+  }
+
+  label {
+    display: block;
+  }
+</style>
